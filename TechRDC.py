@@ -20,20 +20,25 @@ def menu_principal():
 def demander_ia(prompt):
     try:
         variation = random.randint(1, 10000)
+        jour = random.choice(["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"])
+        niveau = random.choice(["débutant", "intermédiaire", "avancé"])
+        langue = random.choice(["Python", "Dart", "JavaScript", "Kotlin"])
+        sujet = random.choice(["performance", "sécurité", "lisibilité", "productivité", "débogage", "architecture"])
+        
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[
                 {
                     "role": "system",
-                    "content": "Tu es TechRDC Bot, assistant tech pour developpeurs africains. Reponds en francais, de maniere courte et motivante. Utilise des emojis. Chaque reponse doit etre differente des precedentes."
+                    "content": f"Tu es TechRDC Bot, un assistant tech pour les developpeurs africains. Tu reponds toujours en francais. IMPORTANT : Aujourd'hui c'est {jour}, variation #{variation}. Concentre-toi sur le sujet : {sujet}. Niveau : {niveau}. Ne repete JAMAIS une reponse precedente."
                 },
                 {
                     "role": "user",
-                    "content": f"{prompt} (variation #{variation})"
+                    "content": f"{prompt} (contexte: {langue}, {sujet}, variation #{variation})"
                 }
             ],
             max_tokens=300,
-            temperature=1.2
+            temperature=1.5
         )
         return response.choices[0].message.content
     except Exception as e:
@@ -58,8 +63,9 @@ def partager(message):
 @bot.message_handler(commands=['apropos'])
 def apropos(message):
     texte = "ℹ️ A PROPOS\n\n"
-    texte += "🇨🇩 Cree par Celestin Yama\n"
-    texte += "📱 Instagram : @cedj024\n"
+    texte += "🇨🇩 Créé par Célestin Yama\n"
+    texte += "📱 Whatsapp : +243814054212\n"
+    texte += "@ Email : celestinyama24@gmail.com\n"
     texte += "🎯 Mission : Democratiser la tech en RDC\n\n"
     texte += "💪 Ensemble, faisons grandir la tech en Afrique!"
     bot.reply_to(message, texte, reply_markup=menu_principal())
