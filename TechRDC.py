@@ -2,6 +2,9 @@ import telebot
 import random
 from groq import Groq
 import os
+import threading
+import time
+from datetime import datetime
 
 TOKEN = "8734755653:AAFPEWLDBYzvrbcZZdeRSr21AalcfFU9ekA"
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
@@ -141,4 +144,38 @@ def inconnu(message):
         bot.reply_to(message, "❓ Je n'ai pas compris.\nUtilisez les boutons en bas! 👇", reply_markup=menu_principal())
 
 print("TechRDC Bot demarre! 🇨🇩🤖")
+
+# ================================
+# PUBLICATION AUTOMATIQUE
+# ================================
+
+CANAL_ID = "@techrdc_cm"
+VOTRE_ID = 6786514592
+
+def publier_astuces():
+    while True:
+        now = datetime.now()
+        # Publier à 8h du matin
+        if now.hour == 8 and now.minute == 0:
+            
+            # Astuce du jour
+            astuce = demander_ia("Donne une astuce de programmation unique pour aujourd'hui")
+            bot.send_message(CANAL_ID, f"💡 ASTUCE DU JOUR\n\n{astuce}")
+            time.sleep(60)
+            
+            # Raccourci du jour
+            raccourci = demander_ia("Donne un raccourci Windows utile du jour")
+            bot.send_message(CANAL_ID, f"⌨️ RACCOURCI DU JOUR\n\n{raccourci}")
+            time.sleep(60)
+            
+            # Opportunite du jour
+            opp = demander_ia("Donne une opportunite tech pour developpeurs africains")
+            bot.send_message(CANAL_ID, f"🌍 OPPORTUNITE DU JOUR\n\n{opp}")
+            
+        time.sleep(30)
+
+# Lancer la publication en arriere plan
+thread = threading.Thread(target=publier_astuces)
+thread.daemon = True
+thread.start()
 bot.polling()
