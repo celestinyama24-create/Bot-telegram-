@@ -29,7 +29,7 @@ def demander_ia(prompt):
         sujet = random.choice(["performance", "sécurité", "lisibilité", "productivité", "débogage", "architecture"])
         
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=[
                 {
                     "role": "system",
